@@ -1,8 +1,12 @@
 package com.cybertek.tests.HOMEWORK;
 
 import com.cybertek.utilities.WebDriverFactory;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -31,45 +35,36 @@ public class homework_Oscar_1 {
     //    5. Then select FamilyAlbum, make quantity 2, and click Calculate,
     //    6. Then verify Total is equal to Quantity*PricePerUnit
 
-    WebDriver driver;
 
+    WebDriver driver; // declare our reference for the object
+
+    WebDriverWait wait;
 
     @BeforeMethod
-    public void setup() {
-
-        driver = WebDriverFactory.getDriver("chrome");
+    public void setUp(){
+        driver = WebDriverFactory.getDriver("chrome"); // create the object
         driver.manage().window().maximize();
-
-        //implicity wait
+        // implicitly wait, this is going to be applied to whole test cases and elements
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-
+        driver.get("https://chercher.tech/practice/explicit-wait-sample-selenium-webdriver");
     }
-
     @AfterMethod
-
-    public void tearDown() throws InterruptedException {
-        // Thread.sleep(5000);
-        driver.quit();
+    public void tearDown(){
+        driver.close();
     }
 
     @Test
-    public void alertPresentTest()
+    public void alertPresentTest(){
+        // Click on "Click me, to Open an alert after 5 seconds"
+        WebElement initiateALert = driver.findElement(By.id("alert"));
+        initiateALert.click();
 
-            throws InterruptedException {
-        driver.get("https://chercher.tech/practice/explicit-wait-sample-selenium-webdriver");
-
-        driver.findElement(By.linkText("Click me")).click();
-
-
-       //  Explicitly wait until alert is present
-        WebDriverWait wait = new WebDriverWait(driver,10);
-
-        //Then handle the Javascript alert
-        String currentWindowHandle = driver.getWindowHandle();
-
-        // click Click for JS ALLERT BUTTON
-        driver.findElement(By.xpath("//buton[1]")).click();
-
-
+        wait = new WebDriverWait(driver,10);
+        wait.until(ExpectedConditions.alertIsPresent());
+        // handle javascript alert
+        // if you don't wait you will get NoAlertPresentException: no such alert
+        Alert alert = driver.switchTo().alert();
+        alert.accept();
     }
+
 }
